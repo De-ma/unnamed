@@ -1,17 +1,3 @@
-"""
-P I X E L A T I O N
-
-David Oniani
-Licensed under MIT
-"""
-
-
-# Have to manually disable pylint for this project.
-# Otherwise, get pylint(E1101) warning.
-# Below is the explanation of why it happens
-# NOTE: pyxel initiates an object and binds its methods to the pyxel module.
-#       You canont use these methods until the init function has been called.
-#       This makes a nice API but is not so good for the static analysis.
 
 # pylint: disable-all
 
@@ -35,41 +21,6 @@ class Pixelation:
         pyxel.init(WINDOW_WIDTH, WINDOW_HEIGHT, caption="Pixelation")
 
         pyxel.load("jump_game.pyxel")
-
-        # Sound settings
-
-        # First sound effect
-        # pyxel.sound(0).set(
-        #     "e2e2c2g1 g1g1c2e2 d2d2d2g2 g2g2rr \
-        #         c2c2a1e1 e1e1a1c2 b1b1b1e2 e2e2rr",
-        #     "p",
-        #     "6",
-        #     "vffn fnff vffs vfnn",
-        #     25,
-        # )
-
-        # # Second sound effect
-        # pyxel.sound(1).set(
-        #     "r a1b1c2 b1b1c2d2 g2g2g2g2 c2c2d2e2 \
-        #         f2f2f2e2 f2e2d2c2 d2d2d2d2 g2g2r r ",
-        #     "s",
-        #     "6",
-        #     "nnff vfff vvvv vfff svff vfff vvvv svnn",
-        #     25,
-        # )
-
-        # # Third sound effect
-        # pyxel.sound(2).set(
-        #     "c1g1c1g1 c1g1c1g1 b0g1b0g1 b0g1b0g1 \
-        #         a0e1a0e1 a0e1a0e1 g0d1g0d1 g0d1g0d1",
-        #     "t"
-        #     "7",
-        #     "n",
-        #     25,
-        # )
-
-        # self.play_music()                  # Play music with all sound effects
-
 
         self.start_time = 0                # Start time
         self.timer = 0                     # Track the time
@@ -95,11 +46,6 @@ class Pixelation:
         self.jump_height = JUMP_HEIGHT     # Jump height
         self.is_jumping = False            # Variable declaration, for jumping
         self.jump_num = 0                  # How many times did it jump?
-
-        # Laser beam variables
-        self.laser_is_shooting = False     # Are the clouds shooting?
-        self.laser_beam_timer = 0          # Laser beam time gap
-        self.hit_score = HIT_SCORE         # Score increment for laser hit
 
         pyxel.run(self.update, self.draw)  # Run the environment
 
@@ -160,35 +106,71 @@ class Pixelation:
 
     def draw(self) -> None:
         """Draw the environment."""
-        pyxel.cls(13)
+        pyxel.cls(12)
 
-        self.welcome()      # Welcome the player
+        self.welcome() 
 
-  
+        if (self.is_running is True):
 
-        self.ground()       # Draw the ground
-        # self.hero()         # Draw the hero
-        self.jump()         # Jump
-        # self.laser_beam()   # Laser beam activation
-        self.pause()        # Check if the game is paused
-        self.game_over()    # Check if the game is over
-        self.constraints()  # Impose constraints on the hero
-        self.show_score()   # Draw the score
-        self.show_timer()   # Show the elapsed time
+            self.ground() #Draw ground
+            self.hero() #Draw hero
+            self.jump()         # Jump
+        # # self.laser_beam()   # Laser beam activation
+        # self.pause()        # Check if the game is paused
+        # self.game_over()    # Check if the game is over
+            self.constraints()  # Impose constraints on the hero
+        # self.show_score()   # Draw the score
+        # self.show_timer()   # Show the elapsed time
+
+            # pyxel.blt(
+            #     self.hero_x,
+            #     self.hero_y + 100,
+            #     0,
+            #     0,
+            #     0,
+            #     16,
+            #     16,
+            #     12,
+            # )
+        
+
 
         # pyxel.blt(
-        #     self.hero_x,
-        #     self.hero_y + 100,
+        #     self.dema_x,
+        #     self.dema_y,
         #     0,
         #     0,
-        #     0,
+        #     64,
         #     16,
-        #     16,
+        #     79,
         #     12,
         # )
-        
-        pyxel.blt(
-                    self.hero_x,
+
+    def welcome(self) -> None:
+        """Welcome text."""
+        # NOTE: The score must be >= -100 not to show 'GAME OVER' screen
+        if not self.is_running:
+            pyxel.cls(0)
+            pyxel.text(
+                WINDOW_HEIGHT/3,
+                WINDOW_WIDTH/4,
+                "Welcome to unnamed part i!\n\nPress enter to start.",
+                7
+            )
+
+    def ground(self) -> None:
+        """Draw the ground."""
+        pyxel.rect(0, 110, 180, 120, 2)
+
+        # self.floor = [(i * 60, i * 20 + 50, True) for i in range(3)]
+        # # 0, 50
+        # # 60, 70
+
+        # for x, y, is_active in self.floor:
+        #     pyxel.blt(x, y, 0, 0, 16, 40, 8, 12)
+
+    def hero(self) -> None:
+        pyxel.blt(  self.hero_x,
                     self.hero_y + 100,
                     0,
                     16,
@@ -197,53 +179,6 @@ class Pixelation:
                     16,
                     12,
                 )
-
-        pyxel.blt(
-            self.dema_x,
-            self.dema_y,
-            0,
-            0,
-            64,
-            16,
-            79,
-            12,
-        )
-
-    def welcome(self) -> None:
-        """Welcome text."""
-        # NOTE: The score must be >= -100 not to show 'GAME OVER' screen
-        if not self.is_running and self.score >= -100 and not self.is_paused:
-            pyxel.text(
-                28,
-                50,
-                "Welcome!",
-                pyxel.frame_count % 16
-            )
-
-    def show_score(self) -> None:
-        """Put the score in the upper-right corner."""
-        score = f"SCORE {self.score}"
-        pyxel.text(4, 5, score, 1)
-        pyxel.text(4, 4, score, 7)
-
-    def show_timer(self) -> None:
-        """Show the timer under the score."""
-        timer = f"TIME {self.timer}"
-        pyxel.text(4, 13, timer, 1)
-        pyxel.text(4, 12, timer, 7)
-
-
-    def ground(self) -> None:
-        """Draw the ground."""
-        pyxel.rect(0, 110, 180, 120, 2)
-
-        self.floor = [(i * 60, i * 20 + 50, True) for i in range(3)]
-        # 0, 50
-        # 60, 70
-
-        for x, y, is_active in self.floor:
-            pyxel.blt(x, y, 0, 0, 16, 40, 8, 12)
-
 
     def jump(self) -> None:
         """A simple jump implementation."""
@@ -377,22 +312,6 @@ class Pixelation:
         if self.is_paused:
             self.is_running = False
             pyxel.text(50, 50, "THE GAME IS PAUSED", pyxel.frame_count % 16)
-
-    def game_over(self) -> None:
-        """If the score is below -100, shows the "GAME OVER" screen.
-
-        NOTE: If the score goes below -100, the player gets the points
-            equal to 100 times the time in the game (the timer value).
-        """
-        if self.score < -100:
-            self.is_running = False
-            pyxel.text(70, 40, "GAME OVER", pyxel.frame_count % 16)
-            pyxel.text(
-                45,
-                50,
-                f"YOUR FINAL SCORE IS {round(100 * self.timer)}",
-                pyxel.frame_count % 16
-            )
 
 
 if __name__ == "__main__":
