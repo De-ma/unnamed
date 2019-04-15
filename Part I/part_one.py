@@ -20,7 +20,7 @@ class Pixelation:
     def __init__(self) -> None:
         pyxel.init(WINDOW_WIDTH, WINDOW_HEIGHT, caption="Pixelation")
 
-        pyxel.load("assets.pyxel")
+        pyxel.load("jump_game.pyxel")
 
         self.start_time = 0                # Start time
         self.timer = 0                     # Track the time
