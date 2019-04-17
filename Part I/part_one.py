@@ -20,12 +20,15 @@ class Pixelation:
     def __init__(self) -> None:
         pyxel.init(WINDOW_WIDTH, WINDOW_HEIGHT, caption="Pixelation")
 
-        pyxel.load("jump_game.pyxel")
+        pyxel.load("assets.pyxel")
 
         self.start_time = 0                # Start time
         self.timer = 0                     # Track the time
         self.is_running = False            # Is the game running?
         self.is_paused = False             # Is the game paused?
+
+        self.is_left = False
+        self.is_walking = False 
 
         self.loop_1 = False                # Do not use reset cloud
         self.loop_2 = False                # Do not use reset cloud
@@ -34,11 +37,8 @@ class Pixelation:
         self.go_into_loop_2 = True         # Check if x coordinate > limit
 
         self.hero_x = 0
-        self.hero_y = 100
-
-        self.dema_x = 0
-        self.dema_y = 100
-
+        self.hero_y = 0
+        
         self.score = 0                     # Total score
 
         # Jump variables
@@ -59,19 +59,13 @@ class Pixelation:
             # Press the 'leftarrow' key or the 'A' key to move left
             if pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_A):
                 self.hero_x -= 1
+                self.is_left = True 
+                self.is_walking = not self.is_walking
 
             # Press the 'rightarrow' key or 'D' key to move left
             elif pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D):
-                pyxel.blt(
-                    self.hero_x,
-                    self.hero_y + 100,
-                    0,
-                    16,
-                    0,
-                    16,
-                    16,
-                    12,
-                )
+                self.is_left = False
+                self.is_walking = not self.is_walking
                 self.hero_x += 1
 
             # Press the 'uparrow' key or 'W' key to move left
@@ -89,6 +83,7 @@ class Pixelation:
             # Press the 'Q' key to quit the game
             elif pyxel.btnp(pyxel.KEY_Q):
                 pyxel.quit()
+            
         else:
             # Press the 'Enter' key to start the game
             if pyxel.btnp(pyxel.KEY_ENTER):
@@ -121,31 +116,7 @@ class Pixelation:
             self.constraints()  # Impose constraints on the hero
         # self.show_score()   # Draw the score
         # self.show_timer()   # Show the elapsed time
-
-            # pyxel.blt(
-            #     self.hero_x,
-            #     self.hero_y + 100,
-            #     0,
-            #     0,
-            #     0,
-            #     16,
-            #     16,
-            #     12,
-            # )
         
-
-
-        # pyxel.blt(
-        #     self.dema_x,
-        #     self.dema_y,
-        #     0,
-        #     0,
-        #     64,
-        #     16,
-        #     79,
-        #     12,
-        # )
-
     def welcome(self) -> None:
         """Welcome text."""
         # NOTE: The score must be >= -100 not to show 'GAME OVER' screen
@@ -162,21 +133,22 @@ class Pixelation:
         """Draw the ground."""
         pyxel.rect(0, 110, 180, 120, 2)
 
-        # self.floor = [(i * 60, i * 20 + 50, True) for i in range(3)]
-        # # 0, 50
-        # # 60, 70
+        self.floor = [(i * 60, i * 20 + 50, True) for i in range(3)]
+        # 0, 50
+        # 60, 70
 
-        # for x, y, is_active in self.floor:
-        #     pyxel.blt(x, y, 0, 0, 16, 40, 8, 12)
+        for x, y, is_active in self.floor:
+            pyxel.blt(x, y, 0, 0, 16, 40, 8, 12)
 
     def hero(self) -> None:
+
         pyxel.blt(  self.hero_x,
                     self.hero_y + 100,
                     0,
+                    16 if self.is_walking is False else 0,
+                    24 if self.is_left is True else 0,
                     16,
-                    0,
-                    16,
-                    16,
+                    40 if self.is_left is True else 16,
                     12,
                 )
 
